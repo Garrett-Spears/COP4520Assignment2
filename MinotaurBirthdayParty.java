@@ -1,24 +1,43 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class MinotaurBirthdayParty {
     // Number of guests (threads) at the party 
-    public static final int NUM_GUESTS = 1000;
+    public static final int NUM_GUESTS = 100;
 
     public static boolean cupcakeAvailable = true;
     public static int numGuestsEatenCupcake = 0;
 
     public static void main(String[] args) {
+        long startTime = System.currentTimeMillis();
+
+        List<Guest> guests = new ArrayList<>();
+
+        // Start all guest threads
         for (int i = 0; i < NUM_GUESTS; i++) {
             Guest guest = new Guest(i);
+            guests.add(guest);
             guest.start(); 
         }
 
-        while (numGuestsEatenCupcake < NUM_GUESTS) {
-            ;
+        // Join all guest threads to ensure all threads finish
+        try {
+            for (Guest guest : guests) {
+                guest.join();
+            }
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        System.out.println("All " + NUM_GUESTS + " have eaten a cupcake.");
+        long endTime = System.currentTimeMillis();
+
+        // Calculate Execution Time
+        double elapsedSeconds = (endTime - startTime) / 1000.0;
+
+        System.out.println("All " + NUM_GUESTS + " have eaten a cupcake within " +  elapsedSeconds + " seconds.");
     }
 }
 
