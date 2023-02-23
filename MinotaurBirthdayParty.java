@@ -10,7 +10,7 @@ public class MinotaurBirthdayParty {
     // Number of guests (threads) at the party 
     public static final int NUM_GUESTS = 100;
 
-    // Boolean flag that prints info about what guest is chosen to enter the labyrinth each time
+    // Boolean flag that decides whether on not to print which guest is chosen to enter the labyrinth each time
     // and what each guest does while in the labyrinth (may slow down performance slightly)
     public static final boolean PRINT_EVENTS = true;
 
@@ -34,13 +34,9 @@ public class MinotaurBirthdayParty {
     public static AtomicInteger numGuestsEatenCupcake = new AtomicInteger(0);
 
     public static void main(String[] args) {
-
-        List<Guest> guests = new ArrayList<>();
-
         // Start all guest threads
         for (int i = 0; i < NUM_GUESTS; i++) {
             Guest guest = new Guest(i);
-            guests.add(guest);
             guest.start(); 
         }
 
