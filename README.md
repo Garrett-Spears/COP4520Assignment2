@@ -1,7 +1,7 @@
 # COP4520Assignment2
 Since I am most familiar with Java and had success with it during the first assignment, I decided to utilize this language again for this assignment.
 
-# Problem 1: MinotaurBirthdayParty
+# Problem 1: Minotaur Birthday Party
 
 ## Approach:
 
@@ -83,10 +83,43 @@ To ensure my program was working properly at first, I ran my program on small in
             Average: 3.105s
 
 ## To Run Problem 1:
-    Before running, you can modify the number of guests/threads for the problem by changing the value of the NUM_GUESTS field at the top of the
-    MinotaurBirthdayParty class. Can also enable/disable printing of each step in the program by changing the value of the PRINT_EVENTS boolean
-    flag, which is also found at the top of the MinotaurBirthdayParty class. To run the program:
-        1. Use the command prompt to navigate to the directory where the MinotaurBirthdayParty.java file is located.
-        2. Enter the command "javac MinotaurBirthdayParty.java" on the command line to compile the java source code.
-        3. Enter the command "java MinotaurBirthdayParty" on the command line to execute the code.
-        4. Output for the program is printed to the command line.
+
+Before running, you can modify the number of guests/threads for the problem by changing the value of the NUM_GUESTS field at the top of the
+MinotaurBirthdayParty class. Can also enable/disable printing of each step in the program by changing the value of the PRINT_EVENTS boolean
+flag, which is also found at the top of the MinotaurBirthdayParty class. To run the program:
+    1. Use the command prompt to navigate to the directory where the MinotaurBirthdayParty.java file is located.
+    2. Enter the command "javac MinotaurBirthdayParty.java" on the command line to compile the java source code.
+    3. Enter the command "java MinotaurBirthdayParty" on the command line to execute the code.
+    4. Output for the program is printed to the command line.
+
+
+# Problem 2: Minotaur Crystal Vase
+
+## Choosing an Approach
+
+### Approach 1
+
+This approach feels like the most hectic out of the 3 given approaches. One advantage of this approach is that each guest can freely roam the castle until they choose to visit the vase. Another pro is that a guest may be able to visit a vase immediately with no waiting time even if they are not the first ones thery're waiting to get in the showroom. There are quite a few disadvantages to this approach. The first of these being that all the guests will crowd the showroom fighting for access. Additionally, no guest is guaranteed that they'll be able to see the vase and a guest may have to wait a long time to visit the vase even if they are one of the first ones by the showroom waiting for access.
+
+### Approach 2
+
+I believe that the second approach is definitely better than the first one. There will not be the issue of crowding the room and trying to gain access to the showroom since the sign will keep guests from fighting to gain access until the room is available. However, this approach still struggles from many of the same issues as the first approach. In this approach, no guest is guaranteed they'll be able to see the vase since other guest may be able to just keep gaining access to the room repeatedly. Additionally, a guest may keep checking the sign continously, but someone who is checking the sign their first time may be able to get access first which makes things pretty unfair.
+
+### Approach 3
+
+I believe that the third approach is the best all around approach, so I chose to go with this one. The only issue I see with this approach is that guests may have to waste their time in really long lines if the demand is high to visit the vase. However, this approach is a lot more fair since every guest who wants to see the vase will get the chance to do so. Additionally, there is less crowding around the showroom with this approach since the guests are waiting in a well formed line instead of all trying to continously check if the room is open. 
+
+## Chosen Approach
+
+As I previously mentioned, I decided to use the third approach to solve problem 2. In my implementation of problem 2, the program starts at the "MinotaurCrystalVase" class. At the top of this class, there is a static variable "NUM_GUESTS" which defines the number of guests that are attending the party. This variable can be modified to run problem 2 on different input sizes. The "MinotaurCrystalVase" class essentially represents the showroom that the guests are trying to visit.
+
+To follow the design of approach 3, I created a BlockingQueue that holds guests/threads that are waiting to visit the vase. This queue is thread safe such that the main thread can safely remove guests from the front of the queue while each guest thread can add themselves to the back of the queue if they so choose to. In the "MinotaurCrystalVase" class, there is also an AtomicInteger counter called "numGuestsVisitedVase" that keeps track of how many guests have currrently visited the vase at least once.
+
+At the beginning of my main thread's execution, all "Guest" threads are spawned and start deciding on whether or not to join the queue to see the vase. The main thread keeps the showroom open while there are still active "Guest" threads, meaning that there still might be people at the party that want to visit the vase.
+On each iteration of the main thread's while loop, it checks if the queue is empty and takes a brief break before checking again if so. Otherwise the Guest at the front of the queue is pulled out of the queue and given the chance to visit the showroom. If it is the guest's first time in the showroom, then he/she increments the shared counter of how many guests have seen the vase so far. Once the guest is done visiting the vase, the guest's inLine state is reset to false so that they can choose whether or not they'd like to rejoin the queue again on their own will. Then, the guest notifies, the next guest in line that it's their turn on the next iteration of the loop. Once all guest threads, leave the party, the program prints how long it took all guests to visit the vase.
+
+Each guest thread is assigned their own unique identifier and keeps track of how many times they have visited the vase so far. A "Guest" thread keeps executing while there are still other guests that have not seen the vase yet. The guest continously makes a random decision on whether or not they would like to join/rejoin the queue which is evaluated based on the percentage chance that all guests are assigned in the Guest class. If the guest decides not to join the queue, they take a brief break before making a random decision again. Otherwise the guest adds themselves to the back of the BlockingQueue and sets their state inLine to true. The guest then continously keeps waiting until their inLine state is set back to false. Then, the guest can decide whether or not to rejoin the queue.
+
+## Design Correctness/Efficiency: 
+
+The runtime for this problem seems to be a lot faster for this problem, but I guarantee this largely depends on the percentage set for each guest to join/rejoin the queue. However, the randomness of this problem still causes the runtime for this problem to vary. I decided to make my implementation of this problem keep executing until all guests have had a chance to visit the vase at least once. However, guests are deifnitely allowed to visit the vase multiple times by rejoining the queue.
