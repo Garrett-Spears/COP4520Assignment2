@@ -122,4 +122,36 @@ Each guest thread is assigned their own unique identifier and keeps track of how
 
 ## Design Correctness/Efficiency: 
 
-The runtime for this problem seems to be a lot faster for this problem, but I guarantee this largely depends on the percentage set for each guest to join/rejoin the queue. However, the randomness of this problem still causes the runtime for this problem to vary. I decided to make my implementation of this problem keep executing until all guests have had a chance to visit the vase at least once. However, guests are deifnitely allowed to visit the vase multiple times by rejoining the queue.
+The runtime for this problem seems to be a lot faster in comparison to problem 1, but I guarantee this largely depends on the percentage set for each guest's willingness to join/rejoin the queue. However, the randomness of this problem still causes the runtime to vary. Ultimately, my implementation for this problem seems to be very efficient since it is able to even handle relatively larger input cases like 1000 while still running very fase.
+
+I made sure to use an ArrayBlockingQueue instead of a regular queue for my program, so that multiple threads can safely access the queue at the same time. I also utilized an AtomicInteger for the counter that keeps track of how many guests have seen the vase, so that all threads have access to the most up to date information on when all guest visit the vase so they can stop executing. In my program, I also print when each thread visits the vase, so I ran the program with some small input cases and verified that each unique guest thread was able to visit the vase before the program finished execution.
+
+## Experimental Evaluation:
+
+To ensure my program was working properly at first, I ran my program on small inputs of number of guests and checked that each unique guest printed out that they visited the vase before all threads finish their execution. After confirming my output was valid, I decided to evaluate how efficiently it is able to perform. However, since each guest makes random decisions, these runtimes vary a little bit. I decided to test one input size and ran 5 trials for it. I only chose to test for one input size since there was less variation in runtimes for this problem in comparison to problem 1. The results of these trials are listed below.
+
+    NUM_GUESTS = 100:
+        With Print Steps:
+            Trial 1: 0.114s
+            Trial 2: 0.103s
+            Trial 3: 0.083s
+            Trial 4: 0.080s
+            Trial 5: 0.069
+            Average: 0.088s
+        Without Print Steps:
+            Trial 1: 0.070s
+            Trial 2: 0.105s
+            Trial 3: 0.092s
+            Trial 4: 0.069s
+            Trial 5: 0.117s
+            Average: 0.091s
+
+## To Run Problem 2:
+
+Before running, you can modify the number of guests/threads for the problem by changing the value of the NUM_GUESTS field at the top of the
+MinotaurCrystalVase class. You can also enable/disable printing of each guest's visit to the showroom in by changing the value of the PRINT_VASE_VISITORS boolean
+flag, which is also found at the top of the MinotaurCrystalVase class. To run the program:
+    1. Use the command prompt to navigate to the directory where the MinotaurCrystalVase.java file is located.
+    2. Enter the command "javac MinotaurCrystalVase.java" on the command line to compile the java source code.
+    3. Enter the command "java MinotaurCrystalVase " on the command line to execute the code.
+    4. Output for the program is printed to the command line.
